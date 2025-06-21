@@ -11,5 +11,5 @@ public enum ItemClass
     HomeMenu,
     CreateRoom,
     Public,
-    JoinRoom
+    WaitingRoom
 }
