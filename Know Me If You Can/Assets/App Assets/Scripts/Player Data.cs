@@ -1,12 +1,21 @@
 using TMPro;
-using UnityEngine;
+using Photon.Pun;
 
-public class PlayerData : MonoBehaviour
+public class PlayerData : MonoBehaviourPun 
 {
     public TMP_Text playerName;
-
-    public void Setup()
+    private void Start()
     {
-        playerName.text = UIManager.instance.nicknameHolder;
+        if (photonView.IsMine)
+        {
+            photonView.RPC("Setup", RpcTarget.AllBuffered, PhotonNetwork.NickName);
+        }
+    }
+
+    [PunRPC]
+    public void Setup(string nickname)
+    {
+        playerName.text = nickname;
+
     }
 }

@@ -18,6 +18,8 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public GameObject playerNameData;
     public Transform playerHolder;
 
+    public bool isReadyForRoomOperations = false;
+
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -30,54 +32,89 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         DontDestroyOnLoad(this.gameObject);
     }
 
-    private void Start()
+    public void ConnectedToServer(string playerName)
     {
         PhotonNetwork.ConnectUsingSettings();
+        PhotonNetwork.NickName = playerName;
     }
 
+
+    private void Update()
+    {
+        bool isInRoom = PhotonNetwork.InRoom;
+        bool isInLobby = PhotonNetwork.InLobby;
+        Debug.Log($"IN ROOM: {isInRoom}. IN LOBBY: {isInLobby}.");  
+    }
     public override void OnConnectedToMaster()
     {
+        Debug.Log("In game server now...");
         base.OnConnectedToMaster();
-        PhotonNetwork.JoinLobby(); // join the master lobby
+        PhotonNetwork.JoinLobby();
     }
 
     public override void OnJoinedLobby()
     {
+        Debug.Log("Joined lobby!");
+        isReadyForRoomOperations = true;
         base.OnJoinedLobby();
+    }
+
+    private void OnConnectedToServer()
+    {
+        Debug.Log("Connected to server!");
+    }
+
+    public override void OnConnected()
+    {
+        base.OnConnected();
+        Debug.Log("Connected!");
+    }
+
+    public override void OnCreateRoomFailed(short returnCode, string message)
+    {
+        base.OnCreateRoomFailed(returnCode, message);
+        Debug.Log(message);
     }
 
     public void OnCreateRoom(string roomName, RoomOptions roomOptions)
     {
         PhotonNetwork.CreateRoom(roomName, roomOptions);
+        GameManager.instance.OpenMenu(4);
     }
 
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
-        if (PhotonNetwork.IsMasterClient)
-        {
-            GameObject roomObj = PhotonNetwork.Instantiate(roomCreatedInstance.name, roomHolder.transform.position, Quaternion.identity);
-            var roomObj_roomData = roomObj.GetComponent<RoomData>();
-            roomObj.transform.SetParent(roomHolder, false); // <summary> false for world position
-            if (roomObj_roomData != null)
-            {
-                var masterClientOwner = PhotonNetwork.MasterClient.NickName;
-                roomObj_roomData.Setup(UIManager.instance.roomName.text, masterClientOwner, PhotonNetwork.CurrentRoom.PlayerCount, PhotonNetwork.CurrentRoom.MaxPlayers);
-            }
 
-            if(PhotonNetwork.CurrentRoom.PlayerCount > PhotonNetwork.CurrentRoom.MaxPlayers / 2)
-            {
-                roomObj_roomData.RoomFillingFast();
-            }
+        foreach (Player p in PhotonNetwork.PlayerList)
+        {
+            GameObject obj = Instantiate(playerNameData, playerHolder);
+            obj.GetComponent<PlayerData>().Setup(p.NickName);
+        }
+    }
+
+    public override void OnRoomListUpdate(List<RoomInfo> roomList)
+    {
+        base.OnRoomListUpdate(roomList);
+        foreach(Transform room in roomHolder)
+        {
+            Destroy(room.gameObject);
         }
 
-        GameObject playerObject = PhotonNetwork.Instantiate(playerNameData.name, playerHolder.transform.position, Quaternion.identity);
-        playerObject.transform.SetParent(playerHolder, false); // <summary> false for world position
-        var playerObject_playerData = playerObject.GetComponent<PlayerData>();
-
-        if(playerObject_playerData != null)
+        foreach (var room in roomList)
         {
-            playerObject_playerData.Setup();
+            if (room.RemovedFromList)
+            {
+                continue;
+            }
+
+            RoomData roomData = Instantiate(roomCreatedInstance, roomHolder.transform).GetComponent<RoomData>();
+            roomData.roomName.text = room.Name.ToString();
+            roomData.roomPlayersCount.text = $"{room.PlayerCount} / {room.MaxPlayers}";
+            if (room.PlayerCount > room.MaxPlayers / 2)
+            {
+                roomData.RoomFillingFast();
+            }
         }
     }
 
@@ -87,11 +124,13 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
         Debug.Log("Master client switched!");
     }
 
+
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        base.OnPlayerEnteredRoom(newPlayer);
-        Debug.Log("Player entered room!");
+        GameObject obj = Instantiate(playerNameData, playerHolder);
+        obj.GetComponent<PlayerData>().Setup(newPlayer.NickName);
     }
+
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
