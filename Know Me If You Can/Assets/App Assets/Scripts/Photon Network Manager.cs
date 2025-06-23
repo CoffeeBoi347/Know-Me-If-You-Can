@@ -2,6 +2,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
+using System;
 
 public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 {
@@ -73,6 +74,7 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public override void OnCreateRoomFailed(short returnCode, string message)
     {
         base.OnCreateRoomFailed(returnCode, message);
+        NotificationManager.instance.CreateNotification("Room creation failed!", DateTime.Now);
         Debug.Log(message);
     }
 
@@ -129,6 +131,13 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     {
         GameObject obj = Instantiate(playerNameData, playerHolder);
         obj.GetComponent<PlayerData>().Setup(newPlayer.NickName);
+        NotificationManager.instance.CreateNotification($"{newPlayer.NickName} just joined the room!", DateTime.Now);
+    }
+
+    public override void OnDisconnected(DisconnectCause cause)
+    {
+        base.OnDisconnected(cause);
+        NotificationManager.instance.CreateNotification($"You were disconnected! {cause}", DateTime.Now);
     }
 
 
@@ -136,5 +145,6 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     {
         base.OnPlayerLeftRoom(otherPlayer);
         Debug.Log("Player left room!");
+        NotificationManager.instance.CreateNotification($"{otherPlayer.NickName} just left the room!", DateTime.Now);
     }
 }

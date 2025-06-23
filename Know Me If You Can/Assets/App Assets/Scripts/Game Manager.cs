@@ -6,7 +6,8 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager instance;
     public List<MenuItem> menuItems = new List<MenuItem>();
-
+    public GameObject notificationsMenu;
+    public GameObject mainCanvasMenu;
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -49,6 +50,18 @@ public class GameManager : MonoBehaviour
             itemCanvasGroup.interactable = false;
             itemCanvasGroup.blocksRaycasts = false;
         }
+    }
+
+    public void OpenNotificationsMenu()
+    {
+        mainCanvasMenu.SetActive(false);
+        notificationsMenu.SetActive(true);
+    }
+
+    public void OpenHomeMenu()
+    {
+        mainCanvasMenu.SetActive(true);
+        notificationsMenu.SetActive(false);
     }
 
     public CanvasGroup GetCanvasGroup(MenuItem item)

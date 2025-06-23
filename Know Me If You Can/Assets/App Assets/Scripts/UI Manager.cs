@@ -1,5 +1,6 @@
 using Photon.Pun;
 using Photon.Realtime;
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -42,7 +43,7 @@ public class UIManager : MonoBehaviour
         }
         else
         {
-            nickname.text = "Player_" + Random.Range(0000, 9999).ToString();
+            nickname.text = "Player_" + UnityEngine.Random.Range(0000, 9999).ToString();
             PlayerPrefs.SetString("playerNickname", nickname.text);
         }
     }
@@ -68,6 +69,7 @@ public class UIManager : MonoBehaviour
         PhotonNetwork.NickName = nicknameHolder;
         GameManager.instance.OpenMenu(1);
         PhotonNetworkManager.instance.ConnectedToServer(PhotonNetwork.NickName);
+        NotificationManager.instance.CreateNotification("Opened Home Page!", DateTime.Now);
     }
 
     public void OnCreatedRoom(string roomName)
@@ -84,11 +86,14 @@ public class UIManager : MonoBehaviour
     public void OpenCreateRoom()
     {
         GameManager.instance.OpenMenu(3);
+        NotificationManager.instance.CreateNotification("Opened Creating A Room!", DateTime.Now);
+
     }
 
     public void OpenPublicRoom()
     {
         GameManager.instance.OpenMenu(2);
+        NotificationManager.instance.CreateNotification("Viewing Public Rooms!", DateTime.Now);
     }
 
     private IEnumerator CreatingRoom(string _roomName)
@@ -117,6 +122,7 @@ public class UIManager : MonoBehaviour
 
             PhotonNetworkManager.instance.OnCreateRoom(_roomName, roomOptions);
             hasCreatedRoom = true;
+            NotificationManager.instance.CreateNotification("Created A Public Room!", DateTime.Now);
             yield break;
         }
     }
