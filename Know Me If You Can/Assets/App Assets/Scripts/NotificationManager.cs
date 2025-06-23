@@ -26,7 +26,10 @@ public class NotificationManager : MonoBehaviour
         NotificationData notificationObj = Instantiate(instanceNotification, instanceNotificationPosition.transform).GetComponent<NotificationData>();
         notificationObj.SetupNotification(message, time.ToString());
         messages.Enqueue(new NotificationBaseClass(message, time.ToString()));
-        Destroy(notificationObj, 1f);
+        if(notificationObj  != null)
+        {
+            Destroy(notificationObj, 1f);
+        }
 
         LoadNotifications();
     }

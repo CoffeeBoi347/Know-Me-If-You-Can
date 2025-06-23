@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 {
@@ -20,6 +21,7 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public Transform playerHolder;
 
     public bool isReadyForRoomOperations = false;
+    public Button joinRoomButton;
 
     private void Awake()
     {
@@ -82,6 +84,12 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.CreateRoom(roomName, roomOptions);
         GameManager.instance.OpenMenu(4);
+    }
+
+    public void JoinRoomButton()
+    {
+        PhotonNetwork.AutomaticallySyncScene = true;
+        PhotonNetwork.LoadLevel(1);
     }
 
     public override void OnJoinedRoom()
