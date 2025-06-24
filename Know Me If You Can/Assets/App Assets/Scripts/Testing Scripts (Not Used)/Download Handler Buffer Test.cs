@@ -9,6 +9,9 @@ public class DownloadHandlerBufferTest : MonoBehaviour
         StartCoroutine(GetRequest("https://guthib.com/"));
     }
 
+    // <summary>
+    // this returns the HTML of the particular URL
+
     private IEnumerator GetRequest(string url)
     {
         UnityWebRequest webRequest = new UnityWebRequest(url, "GET");

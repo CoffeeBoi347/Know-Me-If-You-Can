@@ -11,5 +11,9 @@ public enum ItemClass
     HomeMenu,
     CreateRoom,
     Public,
-    WaitingRoom
+    WaitingRoom,
+    MainHomeMenu,
+    CreateQuestionsPage,
+    QuestionsPage,
+    ViewPosts
 }

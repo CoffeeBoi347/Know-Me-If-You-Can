@@ -22,7 +22,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        OpenMenu(0);
+        Setup();
+    }
+
+    void Setup()
+    {
+        OpenMenu(5);
     }
 
     public void OpenMenu(int index)

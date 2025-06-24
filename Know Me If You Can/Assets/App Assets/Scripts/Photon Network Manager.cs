@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class PhotonNetworkManager : MonoBehaviourPunCallbacks
 {
     public static PhotonNetworkManager instance;
-
+    public Button joinRoom;
     [Header("Created Room")]
 
     public GameObject roomCreatedInstance;
@@ -95,6 +95,7 @@ public class PhotonNetworkManager : MonoBehaviourPunCallbacks
     public override void OnJoinedRoom()
     {
         base.OnJoinedRoom();
+        joinRoom.interactable = PhotonNetwork.IsMasterClient;
 
         foreach (Player p in PhotonNetwork.PlayerList)
         {
