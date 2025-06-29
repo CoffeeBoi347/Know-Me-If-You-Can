@@ -15,5 +15,7 @@ public enum ItemClass
     MainHomeMenu,
     CreateQuestionsPage,
     QuestionsPage,
-    ViewPosts
+    ViewPosts,
+    SuccessScreen,
+    Notifications
 }
