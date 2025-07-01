@@ -1345,6 +1345,11 @@ MonoBehaviour:
   optionB: {fileID: 5041923016836725902}
   optionC: {fileID: 7510943580344883028}
   optionD: {fileID: 6487515092198265425}
+  optionInputs:
+  - {fileID: 6060259809816610472}
+  - {fileID: 5041923016836725902}
+  - {fileID: 7510943580344883028}
+  - {fileID: 6487515092198265425}
   nextQues: {fileID: 8979073154946862765}
   prevQues: {fileID: 4102085244612209348}
   options:

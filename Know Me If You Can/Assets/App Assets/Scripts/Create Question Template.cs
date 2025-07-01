@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class CreateQuestionTemplate : MonoBehaviour
 {
+    public Dictionary<string, List<string>> questionTemplates = new Dictionary<string, List<string>>();
     [Header("Instance")]
 
     public static CreateQuestionTemplate instance;
@@ -31,6 +32,14 @@ public class CreateQuestionTemplate : MonoBehaviour
     [SerializeField] private TMP_InputField questionsDesc;
     [SerializeField] private Slider questionsSlider;
 
+    [Header("Options")]
+    public List<string> questionsData = new List<string>();
+    public List<string> optionAData = new List<string>();
+    public List<string> optionBData = new List<string>();
+    public List<string> optionCData = new List<string>();
+    public List<string> optionDData = new List<string>();
+    public Dictionary<Button, TMP_InputField> correctOptions = new Dictionary<Button, TMP_InputField>();
+
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -52,6 +61,11 @@ public class CreateQuestionTemplate : MonoBehaviour
         }
 
         onSuccessButton.onClick.AddListener(OnHomePage);
+    }
+
+    public void AddQuestion(string question, List<string> options)
+    {
+        questionTemplates.Add(question, options);
     }
 
     #region setup
@@ -90,12 +104,6 @@ public class CreateQuestionTemplate : MonoBehaviour
     // <summary> switches questions everytime index changes
     public void SwitchQuestions()
     {
-        if (_currentIndex >= queueHolder.Count)
-        {
-            GameManager.instance.OpenMenu(9);
-            return;
-        }
-
         foreach (var obj in queueHolder)
         {
             var getCanvasGroup = obj.gameObject.GetComponent<CanvasGroup>();
@@ -118,6 +126,25 @@ public class CreateQuestionTemplate : MonoBehaviour
         {
             Destroy(obj);
         }
+    }
+
+    public void OnSuccessPage()
+    {
+        GameManager.instance.OpenMenu(9);
+        foreach(var ques in queueHolder)
+        {
+            ques.SetActive(false);
+        }
+    }
+
+    public void SaveData(string item1, string item2, string item3, string item4, string questionInput, Button correctOption, TMP_InputField correctOptionTxt)
+    {
+        questionsData.Add(questionInput);
+        optionAData.Add(item1);
+        optionBData.Add(item2);
+        optionCData.Add(item3);
+        optionDData.Add(item4);
+        
     }
 
 }

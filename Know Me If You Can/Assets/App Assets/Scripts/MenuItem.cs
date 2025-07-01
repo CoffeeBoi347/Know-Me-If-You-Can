@@ -17,5 +17,7 @@ public enum ItemClass
     QuestionsPage,
     ViewPosts,
     SuccessScreen,
-    Notifications
+    Notifications,
+    ViewQuestions,
+    ViewTab
 }

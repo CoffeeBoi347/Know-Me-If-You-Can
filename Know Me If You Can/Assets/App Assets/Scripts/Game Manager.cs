@@ -60,16 +60,12 @@ public class GameManager : MonoBehaviour
 
     public void OpenNotificationsMenu()
     {
-        mainCanvasMenu.SetActive(false);
-        notificationsMenu.SetActive(true);
-        homeMenuCanvas.SetActive(false);
+        GameManager.instance.OpenMenu(10);
     }
 
     public void OpenHomeMenu()
     {
-        mainCanvasMenu.SetActive(true);
-        notificationsMenu.SetActive(false);
-        homeMenuCanvas.SetActive(true);
+        GameManager.instance.OpenMenu(11);
     }
 
     public CanvasGroup GetCanvasGroup(MenuItem item)
