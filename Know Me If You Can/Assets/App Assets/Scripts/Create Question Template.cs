@@ -144,7 +144,7 @@ public class CreateQuestionTemplate : MonoBehaviour
         optionBData.Add(item2);
         optionCData.Add(item3);
         optionDData.Add(item4);
-        
+        correctOptions[correctOption] = correctOptionTxt;
     }
 
 }
