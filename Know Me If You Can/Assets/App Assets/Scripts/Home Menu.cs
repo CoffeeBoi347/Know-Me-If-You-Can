@@ -31,6 +31,6 @@ public class HomeMenu : MonoBehaviour
 
     void ClickViewButton()
     {
-        GameManager.instance.OpenMenu(8);
+        GameManager.instance.OpenMenu(12);
     }
 }

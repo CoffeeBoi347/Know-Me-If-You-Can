@@ -37,10 +37,15 @@ public class QuestionTemplate : MonoBehaviour
     public void OnClickNextQuestion()
     {
         int getIndex = CreateQuestionTemplate.instance._currentIndex;
-        CreateQuestionTemplate.instance.SaveData(optionA.text, optionB.text, optionC.text, optionD.text, questionName.text, options[getIndex], optionInputs[getIndex]);
-        CreateQuestionTemplate.instance._currentIndex++;
 
-        if (CreateQuestionTemplate.instance._currentIndex >= CreateQuestionTemplate.instance.sliderQuestions)
+        if(getIndex <= CreateQuestionTemplate.instance.sliderQuestions - 1)
+        {
+            Debug.Log(getIndex);
+            CreateQuestionTemplate.instance.SaveData(optionA.text, optionB.text, optionC.text, optionD.text, questionName.text, options[getIndex], optionInputs[getIndex]);
+            CreateQuestionTemplate.instance._currentIndex++;
+        }
+
+        if (CreateQuestionTemplate.instance._currentIndex >= CreateQuestionTemplate.instance.sliderQuestions - 1)
         {
             CreateQuestionTemplate.instance.OnSuccessPage();
             return;
@@ -71,7 +76,6 @@ public class QuestionTemplate : MonoBehaviour
 
         CreateQuestionTemplate.instance.SwitchQuestions();
     }
-
 
     public void ButtonVal(int index)
     {
