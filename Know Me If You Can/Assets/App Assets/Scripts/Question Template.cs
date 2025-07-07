@@ -41,7 +41,7 @@ public class QuestionTemplate : MonoBehaviour
         if(getIndex <= CreateQuestionTemplate.instance.sliderQuestions - 1)
         {
             Debug.Log(getIndex);
-            CreateQuestionTemplate.instance.SaveData(optionA.text, optionB.text, optionC.text, optionD.text, questionName.text, options[getIndex], optionInputs[getIndex]);
+            CreateQuestionTemplate.instance.SaveData(optionA.text, optionB.text, optionC.text, optionD.text, questionName.text, getIndex);
             CreateQuestionTemplate.instance._currentIndex++;
         }
 

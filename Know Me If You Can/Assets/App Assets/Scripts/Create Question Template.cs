@@ -9,7 +9,6 @@ public class CreateQuestionTemplate : MonoBehaviour
     [Header("Instance")]
 
     public static CreateQuestionTemplate instance;
-
     [Header("Strings")]
 
     public string questionIDTxtStr;
@@ -22,7 +21,7 @@ public class CreateQuestionTemplate : MonoBehaviour
     [SerializeField] private Transform canvasHolderParent;
     [SerializeField] private List<GameObject> queueHolder;
     public int _currentIndex;
-
+    public List<QuestionData> questionDataHolder = new List<QuestionData>();
     public Transform holder;
     public GameObject instantiateObj;
 
@@ -39,15 +38,15 @@ public class CreateQuestionTemplate : MonoBehaviour
 
     public GameObject questionIDObj;
     public Transform questionsHolder;
+//  public QuestionsHolder questionsHolderVal;
 
-
-    [Header("Options")]
-    public List<string> questionsData = new List<string>();
-    public List<string> optionAData = new List<string>();
-    public List<string> optionBData = new List<string>();
-    public List<string> optionCData = new List<string>();
-    public List<string> optionDData = new List<string>();
-    public Dictionary<Button, TMP_InputField> correctOptions = new Dictionary<Button, TMP_InputField>();
+//  [Header("Options")]
+//  public List<string> questionsData = new List<string>();
+//  public List<string> optionAData = new List<string>();
+//  public List<string> optionBData = new List<string>();
+//  public List<string> optionCData = new List<string>();
+//  public List<string> optionDData = new List<string>();
+//  public Dictionary<Button, TMP_InputField> correctOptions = new Dictionary<Button, TMP_InputField>();
     private void Awake()
     {
         if(instance != null && instance != this)
@@ -69,6 +68,7 @@ public class CreateQuestionTemplate : MonoBehaviour
         }
 
         onSuccessButton.onClick.AddListener(OnHomePage);
+        InstantiateQuestion();
     }
 
     public void AddQuestion(string question, List<string> options)
@@ -93,6 +93,11 @@ public class CreateQuestionTemplate : MonoBehaviour
     {
         GameObject questionObj = Instantiate(questionIDObj, questionsHolder);
         questionObj.GetComponent<QuestionID>().Setup(questionIDTxtStr, questionDescStr);
+
+        if(questionObj.GetComponent<QuestionID>() == null)
+        {
+            NotificationManager.instance.CreateNotification("Question ID - NOT FOUND!", System.DateTime.Now);
+        }
     }
 
     #endregion
@@ -113,6 +118,20 @@ public class CreateQuestionTemplate : MonoBehaviour
 
         SwitchQuestions();
     }
+
+    #region saving and loading
+
+//    public void SaveQuestions()
+//    {
+//        DataHolder dataHolder = new DataHolder();
+//        QuestionsHolder holder = new QuestionsHolder();
+//        holder.questions = questionDataHolder;
+//        dataHolder.questionsHolder.Add(holder);
+//        string json = JsonUtility.ToJson(holder, true);
+//        System.IO.File.WriteAllText(Application.persistentDataPath + "/dataHolder.json", json);
+//    }
+
+    #endregion
 
     // <summary> switches questions everytime index changes
     public void SwitchQuestions()
@@ -148,7 +167,6 @@ public class CreateQuestionTemplate : MonoBehaviour
         {
             ques.SetActive(false);
         }
-
         InstantiateQuestion();
     }
 
@@ -158,29 +176,39 @@ public class CreateQuestionTemplate : MonoBehaviour
         {
             GameObject question = Instantiate(instantiateObj, holder);
             QuestionsData questionData = question.GetComponent<QuestionsData>();
-            if (questionData != null)
+            if (questionData == null)
             {
                 Debug.LogError("Component not found!");
+                return;
             }
 
-            var questionVal = CreateQuestionTemplate.instance.questionsData[i];
-            var optionA = CreateQuestionTemplate.instance.optionAData[i];
-            var optionB = CreateQuestionTemplate.instance.optionBData[i];
-            var optionCData = CreateQuestionTemplate.instance.optionCData[i];
-            var optionDData = CreateQuestionTemplate.instance.optionDData[i];
-
-            questionData.Setup(questionVal, optionA, optionB, optionCData, optionDData);
+            var questionVal = questionDataHolder[i].question;
+            var optionA = questionDataHolder[i].optionA;
+            var optionB = questionDataHolder[i].optionB;
+            var optionCData = questionDataHolder[i].optionC;
+            var optionDData = questionDataHolder[i].optionD;
+            var correctIndex = questionDataHolder[i].correctIndex;
+            questionData.Setup(questionVal, optionA, optionB, optionCData, optionDData, correctIndex);
         }
     }
 
-    public void SaveData(string item1, string item2, string item3, string item4, string questionInput, Button correctOption, TMP_InputField correctOptionTxt)
+    public void SaveData(string item1, string item2, string item3, string item4, string questionInput, int index)
     {
-        questionsData.Add(questionInput);
-        optionAData.Add(item1);
-        optionBData.Add(item2);
-        optionCData.Add(item3);
-        optionDData.Add(item4);
-        correctOptions[correctOption] = correctOptionTxt;
+        QuestionData questionData = new QuestionData()
+        {
+            question = questionInput,
+            optionA = item1,
+            optionB = item2,
+            optionC = item3,
+            optionD = item4,
+            correctIndex = index,
+        };
+
+        questionDataHolder.Add(questionData);
+        QuestionsHolder questionHolder_ = new QuestionsHolder();
+        questionHolder_.questions.Add(questionData);
+        questionHolder_.quesID = questionIDTxtStr;
+        questionHolder_.quesDesc = questionDescStr;
     }
 
 }
